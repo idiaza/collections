@@ -1,0 +1,132 @@
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/css/dashboard.css">
+
+<div class="dashboard">
+  <div class="busy"></div>
+  <div class="popup">
+    <div class="popup-backdrop"></div>
+    <div class="popup-container">
+      <div class="popup-title"></div>
+      <div class="control popup-close">✕</div>
+      <div class="popup-content"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="bar">
+      <img class="logo" src="/img/logo.jpg">
+      <div class="bar-buttons">
+        <div class="button dictionary-open">
+          <i class="material-icons">assignment</i>
+          <br>Diccionario
+        </div>
+        <div class="button collections-save">
+          <i class="material-icons">save</i>
+          <br>Guardar
+        </div>
+        <!-- <div class="button new-collection-open">Nueva colección</div> -->
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="collections"></div>
+  </div>
+</div>
+
+<script id="dictionary-template" type="text/html">
+  <div class="dictionary">
+    {{#each tags}}
+    <div class="dictionary-tag">
+      <!--<div class="control dictionary-tag-remove">✕ <span style="text-transform: normal;font-size: 10px;padding-right: 16px;padding-left: 4px;">Borrar</span></div>-->
+      <div class="label">tag:</div>
+      <div class="tag dictionary-name">{{name}}</div>
+      <div class="label">palabras:</div>
+      <div class="dictionary-words">
+        {{#each words}}
+          <div class="dictionary-word">
+            {{this}}
+            <i class="material-icons">
+              backspace
+            </i>
+          </div>
+        {{/each}}
+        <input placeholder="Agregar" class="dictionary-word dictionary-new-word">
+      </div>
+      <div class="button dictionary-tag-remove">Borrar tag</div>
+    </div>
+    {{/each}}
+    <div class="actions">
+      <div class="button dictionary-close">Salir</div>
+      <div class="button dictionary-save">Guardar</div>
+    </div>
+  </div>
+</script>
+
+<script id="collection-template" type="text/html">
+  <div class="collection">
+    <div class="field">
+      <div class="label">Nombre:</div>
+      <input class="field-input collection-name" autofocus="autofocus" value="{{name}}">
+    </div>
+
+    <div class="field">
+      <div class="label">Descripción:</div>
+      <textarea class="field-input collection-description">{{description}}</textarea>
+    </div>
+
+    <div class="field">
+      <div class="label">Productos:</div>
+      <textarea class="field-input collection-products">{{#each parents}}{{this}}, {{/each}}</textarea>
+      <div class="button collection-distribute">Distribuir</div>
+    </div>
+
+    <div class="field">
+      <div class="label">Distribución:</div>
+      <div class="positions">
+        {{#each positions}}
+        <div class="position">
+          <div class="tag">{{this}}</div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="button collection-remove">Borrar colección</div>
+      <!--<div class="button collection-save">Guardar</div>-->
+    </div>
+
+  </div>
+</script>
+
+<script id="box-template" type="text/html">
+  <div class="box">
+    <div class="field">
+      <div class="label">Tag:</div>
+      <select>
+        {{#each tags}}
+          <option>{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="field">
+      <div class="label">Productos:</div>
+      <textarea class="field-input">{{#each products}}{{id}}, {{/each}}</textarea>
+    </div>
+    <div class="actions">
+      <div class="button box-close">Salir</div>
+      <div class="button box-save">Guardar</div>
+    </div>
+  </div>
+</script>
+
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/lodash.min.js"></script>
+<script src="/js/lib/axios.js"></script>
+<script src="/js/lib/handlebars-v4.1.2.js"></script>
+<script src="/js/dashboard.js"></script>

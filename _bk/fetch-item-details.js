@@ -1,0 +1,1 @@
+'https://www.falabella.com.pe/rest/model/falabella/rest/browse/BrowseActor/fetch-item-details?{products:[{productId:16568172}]}'

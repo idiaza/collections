@@ -1,0 +1,96 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+<link rel="stylesheet" href="/css/common.css">
+<link rel="stylesheet" href="/css/collections.css">
+
+<div class="collections">
+  <div class="busy"></div>
+  <div class="outfit">
+    <div class="popup">
+      <div class="popup-backdrop"></div>
+      <div class="popup-container">
+        <div class="control popup-close">✕</div>
+        <div class="popup-content"></div>
+      </div>
+    </div>
+    <!-- boxes here -->
+  </div>
+  <div class="basket">
+    <div class="basket-title">
+      Mi colección
+    </div>
+    <div class="basket-items"></div>
+    <div class="control control-button cart-add">
+      Agregar colección a la bolsa
+    </div>
+  </div>
+</div>
+
+<script id="product-template" type="text/html">
+  <div class="product">
+    <div class="picture">
+      <img src="https://falabella.scene7.com/is/image/FalabellaPE/{{sku}}_1?wid=320&hei=320">
+      <img src="https://falabella.scene7.com/is/image/FalabellaPE/{{sku}}_3?wid=320&hei=320">
+    </div>
+    <div class="details">
+      <div class="description">
+        {{description}}
+      </div>
+      <div class="code">Código del producto: {{sku}}</div>
+      <div class="separator"></div>
+      <div class="prices">
+        {{#each prices}}
+          <div class="price">S/ {{price}}</div>
+        {{/each}}
+      </div>
+      <div class="separator"></div>
+      <div class="control control-button sizes">
+        {{#each sizes}}
+          <div class="control size {{#if selected}} selected {{/if}}" data-product="{{sku}}">{{label}}</div>
+        {{/each}}
+      </div>
+      <div class="separator"></div>
+      <div style="display:flex;">
+        <div class="control control-button quantity">
+          <div class="control quantity-decrease">➖</div>
+          <div class="control quantity-number">
+            <input value="1">
+          </div>
+          <div class="control quantity-increase">➕</div>
+        </div>
+        <div class="control control-button collection-add" data-product="{{sku}}">
+          Agregar
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script id="basket-item-template" type="text/html">
+  <div class="separator"></div>
+  <a class="basket-item" href="https://www.falabella.com.pe/falabella-pe/product/{{parentSku}}/" target="_blank">
+    <div class="basket-item-column basket-item-picture">
+      <img src="https://falabella.scene7.com/is/image/FalabellaPE/{{sku}}_2?wid=320&hei=320">
+    </div>
+    <div class="basket-item-column basket-item-description">
+      {{description}}
+    </div>
+    <div class="basket-item-column basket-item-size">
+      {{size}}
+    </div>
+    <div class="basket-item-column basket-item-quantity">
+      {{quantity}}
+    </div>
+    <div class="basket-item-column basket-item-actions">
+      <div class="control collection-remove">✕</div>
+    </div>
+  </a>
+</script>
+
+<script src="/js/lib/jquery.min.js"></script>
+<script src="/js/lib/slick.min.js"></script>
+<script src="/js/lib/jquery.waitforimages.js"></script>
+<script src="/js/lib/lodash.min.js"></script>
+<script src="/js/lib/handlebars-v4.1.2.js"></script>
+<script src="/js/collections.js"></script>
