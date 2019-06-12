@@ -1,39 +1,43 @@
 $(document).ready(function () {
 
+  const TAG_DEFAULT = {
+    name: 'any',
+    words: []
+  };
+  
+  _.each([
+    'dictionary-tag',
+  ], (name) => {
+    Handlebars.registerPartial(name, $('script#' + name + '-template').text().trim());
+  });
+
+  Handlebars.registerHelper('eq', function(a, b) {
+    return a == b;
+  });
+
   var $dashboard = $('.dashboard');
   var $busy = $dashboard.find('.busy');
   var $popup = $dashboard.find('.popup');
   var $collections = $('.collections');
 
-  var store = {
-    tags: [],
-    getTags: function () {
-      return this.tags;
-    },
-    setTag: function (tag, words) {
-      this.tags.push({ name: tag, words: words });
-    },
-    removeTag: function (tag) {
-      _.pullAllBy(this.tags, [{ name: tag }], 'name');
-    },
-    setWord: function (tag, word) {
-      var index = _.findIndex(this.tags, { name: tag });
-      this.tags[index].words.push(word);
-    },
-    collections: [],
-    getCollections: function () {
-      return this.collections;
-    },
-    setCollectionItems: function (collectionName, items) {
-      var index = _.findIndex(this.collections, { name: collectionName });
-      this.collections[index].items = items;
-    },
-  };
-
   function template(name, data) {
     var source = $('script#' + name + '-template').text().trim();
+    
+    // if (!data)
+    //   return Handlebars.registerPartial(name, source);
+
     var render = Handlebars.compile(source);
     return $(render(data));
+  }
+
+  function busy($trigger) {
+    $busy.addClass('visible');
+    $trigger.addClass('disabled');
+  }
+
+  function unbusy($trigger) {
+    $busy.removeClass('visible');
+    $trigger.removeClass('disabled');
   }
 
   function closePopup() {
@@ -57,6 +61,10 @@ $(document).ready(function () {
   }
 
   function parse(html) {
+    // console.log(html.slice(
+    //   html.indexOf('var fbra_browseMainProductConfig = ') + 35,
+    //   html.indexOf('var fbra_browseMainProduct = FalabellaReactApplication.createComponent("ProductDetailApp", fbra_browseMainProductConfig);') -10
+    // ));
     return JSON.parse(html.slice(
       html.indexOf('var fbra_browseMainProductConfig = ') + 35,
       html.indexOf('var fbra_browseMainProduct = FalabellaReactApplication.createComponent("ProductDetailApp", fbra_browseMainProductConfig);') -10
@@ -69,7 +77,7 @@ $(document).ready(function () {
     var product = details.state.product;
     var description = product.displayName.toLowerCase();
     var result = { tag: '', views: [] };
-    var tags = store.getTags();
+    var tags = storage.getTags();
 
     result.id = product.id;
 
@@ -90,7 +98,7 @@ $(document).ready(function () {
     return result;
   }
 
-  function distribute(collectionName, products, positions, callback) {
+  function distribute(collectionId, products, positions, callback) {
     axios.all(_.map(products, function (parentSku) {
       return axios.get(url(parentSku)).then(process);
     }))
@@ -112,69 +120,15 @@ $(document).ready(function () {
           }
         });
 
-        store.setCollectionItems(collectionName, items);
+        storage.setCollectionItems(collectionId, items);
         callback();
       });
   }
 
-  $.getJSON('/collections', function (collections) {
-    $.getJSON('/tags', function (tags) {
-
-      store.collections = collections;
-      store.tags = tags;
-
-      _.each(store.getCollections(), function (collection) {
-        var parents = _.map(_.flatten(collection.items), 'id');
-        var $collection = template('collection', _.assign(collection, { parents: parents }));
-
-        $collection.find('.collection-distribute').on('click', function () {
-          var $button = $(this);
-          var products = _.split(
-            $button.parent().find('.collection-products')
-              .val().trim().replace(/\s/g, ''),
-            ','
-          );
-
-          $button.addClass('disabled');
-          distribute(
-            collection.name,
-            _.compact(products),
-            collection.positions,
-            function () {
-              $button.removeClass('disabled');
-            }
-          );
-        });
-
-        $collection.find('.position').on('click', function () {
-          var $position = $(this);
-          var positionIndex = $position.index();
-
-          var $box = template('box', {
-            products: collection.items[positionIndex],
-            tags: store.getTags(),
-          });
-
-          $box.find('.box-close').on('click', function () {
-            closePopup();
-          });
-
-          openPopup('Posición', $box, false);
-        });
-
-        $collections.append($collection);
-      });
-    });
-  });
-
-  $popup.find('.popup-backdrop, .popup-close').on('click', function () {
-    closePopup();
-  });
-
-  $('.dictionary-open').on('click', function () {
-    var tags = store.getTags();
+  function openDictionary() {
+    var tags = storage.getTags();
     var $dictionary = template('dictionary', { tags: tags });
-
+    
     $dictionary.find('.dictionary-new-word').on('keyup', function (e) {
       if (e.keyCode == 13) {
         var $input = $(this);
@@ -184,28 +138,53 @@ $(document).ready(function () {
                     .text().trim();
         var word = $input.val();
 
-        store.setWord(tag, word);
+        storage.setWord(tag, word);
 
-        $input.before('<div class="dictionary-word">' + word + '</div>');
-        $input.val('');
+        openDictionary();
+
+        // $input.before('<div class="dictionary-word">' + word + '</div>');
+        // $input.val('');
       }
+    });
+
+    $dictionary.find('.dictionary-word .dictionary-word-remove').on('click', function () {
+      var tag = $(this).closest('.dictionary-tag').find('.dictionary-name').text();
+      var word = $(this).parent().find('.dictionary-word-text').text();
+
+      storage.removeWord(tag, word);
+      openDictionary()
     });
 
     $dictionary.find('.dictionary-tag-remove').on('click', function () {
       var $tag = $(this).closest('.dictionary-tag');
       var tag = $tag.find('.dictionary-name').text().trim();
 
-      store.removeTag(tag);
+      storage.removeTag(tag);
       $tag.remove();
+    });
+
+    $dictionary.find('.dictionary-tag-new-button').on('click', function () {
+      var $input = $('.dictionary-tag-new-input');
+      storage.setTag($input.val().trim(), []);
+      openDictionary();
+    });
+
+    $dictionary.find('.dictionary-tag-new-input').on('keyup', function (e) {
+      var $input = $(this);
+      if (e.keyCode == 13) {
+        storage.setTag($input.val().trim(), []);
+        openDictionary();
+      }
     });
 
     $dictionary.find('.dictionary-save').on('click', function () {
       var $button = $(this);
 
-      $button.addClass('disabled');
-      axios.post('/tags', store.getTags())
+      busy($button);
+      axios.post('/tags', storage.getTags())
         .then(function (response) {
-          $button.removeClass('disabled');
+          unbusy($button);
+          closePopup();
         });
     });
 
@@ -214,15 +193,144 @@ $(document).ready(function () {
     });
 
     openPopup('Diccionario', $dictionary, false);
+  }
+
+  function openPosition(collectionIndex, positionIndex) {
+    // var $position = $(this);
+    // var positionIndex = $position.index();
+    var collections = storage.getCollections()[collectionIndex];
+
+    var $box = template('box', {
+      tag: collections.positions[positionIndex],
+      products: collections.items[positionIndex],
+      tags: storage.getTags(),
+    });
+
+    var $select = $box.find('.box-select');
+
+    $select.on('change', function (e) {
+      storage.setPosition($collections.index(), positionIndex, $select.val());
+      openPosition(collectionIndex, positionIndex);
+    });
+
+    $box.find('.box-close').on('click', function () {
+      closePopup();
+    });
+
+    $box.find('.box-save').on('click', function () {
+      // var tag = $box.find('.box-select').val();
+    });
+
+    openPopup('Posición', $box, false);
+  }
+
+  function renderCollections() {
+    $collections.empty();
+
+    _.each(storage.getCollections(), function (collection, collectionIndex) {
+      var parents = _.map(_.flatten(collection.items), 'id');
+      var $collection = template('collection', _.create(collection, {
+        parents,
+        tags: _.concat(storage.getTags(), [TAG_DEFAULT]),
+      }));
+
+      // $collection.find('.position').on('click', function () {
+      //   var $position = $(this);
+      //   var positionIndex = $position.index();
+        
+      //   openPosition(collectionIndex, positionIndex);
+      // });
+
+      // // FIX
+      // $collection.find('.position').each(function () {
+      //   var $position = $(this);
+      //   var positionIndex = $position.index();
+
+      //   storage.on('ChangeCollection' + collectionIndex + 'Position' + positionIndex, function () {
+      //     $position.find('.tag').text(storage.getCollections()[collectionIndex].positions[positionIndex]);
+      //   });
+      // });
+
+      $collection.find('select.position-tag').on('change', function () {
+        var $select = $(this);
+        storage.setPosition(collectionIndex, $select.closest('.position').index(), $select.val());
+      });
+
+      $collection.find('.collection-distribute').on('click', function () {
+        var $button = $(this);
+        var products = _.compact(_.split(
+          $collection.find('.collection-products')
+            .val()
+            .trim()
+            .replace(/\s/g, ''),
+          ','
+        ));
+
+        $button.addClass('disabled');
+        distribute(
+          collection.id,
+          products,
+          collection.positions,
+          function () {
+            $button.removeClass('disabled');
+          }
+        );
+      });
+
+      $collection.find('.collection-remove').on('click', function () {
+        storage.removeCollection(collection.name);
+        $collection.remove();
+      });
+
+      $collection.find('.collection-save').on('click', function () {
+        var $button = $(this);
+        var products = _.compact(_.split(
+          $collection.find('.collection-products')
+            .val()
+            .trim()
+            .replace(/\s/g, ''),
+          ','
+        ));
+
+        busy($button);
+        distribute(
+          collection.id,
+          products,
+          collection.positions,
+          function () {
+            collection.name = $collection.find('.collection-name').val().trim();
+            collection.description = $collection.find('.collection-description').val().trim();
+            axios.post('/collections', storage.getCollection(collection.id))
+              .then(function (response) {
+                unbusy($button);
+              });
+          }
+        );
+      });
+
+      $collections.append($collection);
+    });
+  }
+
+  $.getJSON('/collections', function (collections) {
+    $.getJSON('/tags', function (tags) {
+      storage.collections = collections;
+      storage.tags = tags;
+      
+      renderCollections();
+    });
   });
 
-  $('.collections-save').on('click', function () {
-    var $button = $(this);
+  $popup.find('.popup-backdrop, .popup-close').on('click', function () {
+    closePopup();
+  });
 
-    $button.addClass('disabled');
-    axios.post('/collections', store.getCollections())
-      .then(function (response) {
-        $button.removeClass('disabled');
-      });
+  $('.dictionary-open').on('click', function () {
+    openDictionary();
+  });
+
+  $('.collections-add').on('click', function () {
+    storage.createCollection();
+    renderCollections();
   });
 });

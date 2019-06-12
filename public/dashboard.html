@@ -1,7 +1,8 @@
 <link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"> -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"> -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="/css/lib/handsontable/handsontable.full.min.css">
 <link rel="stylesheet" href="/css/common.css">
 <link rel="stylesheet" href="/css/dashboard.css">
 
@@ -18,56 +19,73 @@
 
   <div class="container">
     <div class="bar">
-      <img class="logo" src="/img/logo.jpg">
+      <!-- <img class="logo" src="/img/logo.jpg"> -->
       <div class="bar-buttons">
+        <div class="button template-download">
+          <i class="material-icons">attach_file</i>
+          <br>Plantilla
+        </div>
         <div class="button dictionary-open">
           <i class="material-icons">assignment</i>
           <br>Diccionario
         </div>
-        <div class="button collections-save">
+        <!-- <div class="button button-primary collections-save">
           <i class="material-icons">save</i>
           <br>Guardar
-        </div>
-        <!-- <div class="button new-collection-open">Nueva colección</div> -->
+        </div> -->
       </div>
     </div>
   </div>
+
+  <br>
 
   <div class="container">
     <div class="collections"></div>
+    <div class="button button-primary collections-add">
+      <i class="material-icons">add</i>
+      <!-- <br>Nueva colección -->
+    </div>
   </div>
 </div>
 
-<script id="dictionary-template" type="text/html">
+<script id="dictionary-tag-template" type="text/x-handlebars-template">
+  <div class="dictionary-tag">
+    <div class="label">Tag:</div>
+    <div class="tag dictionary-name">{{name}}</div>
+    <div class="label">Palabras:</div>
+    <div class="dictionary-words">
+      {{#each words}}
+        <div class="dictionary-word">
+          <div class="dictionary-word-text">{{this}}</div>
+          <i class="dictionary-word-remove material-icons">
+            backspace
+          </i>
+        </div>
+      {{/each}}
+      <input placeholder="Agregar" class="dictionary-word dictionary-new-word">
+    </div>
+    <div class="button dictionary-tag-remove">Borrar tag</div>
+  </div>
+</script>
+
+<script id="dictionary-template" type="text/x-handlebars-template">
   <div class="dictionary">
     {{#each tags}}
-    <div class="dictionary-tag">
-      <!--<div class="control dictionary-tag-remove">✕ <span style="text-transform: normal;font-size: 10px;padding-right: 16px;padding-left: 4px;">Borrar</span></div>-->
-      <div class="label">tag:</div>
-      <div class="tag dictionary-name">{{name}}</div>
-      <div class="label">palabras:</div>
-      <div class="dictionary-words">
-        {{#each words}}
-          <div class="dictionary-word">
-            {{this}}
-            <i class="material-icons">
-              backspace
-            </i>
-          </div>
-        {{/each}}
-        <input placeholder="Agregar" class="dictionary-word dictionary-new-word">
-      </div>
-      <div class="button dictionary-tag-remove">Borrar tag</div>
-    </div>
+      {{> dictionary-tag}}
     {{/each}}
     <div class="actions">
-      <div class="button dictionary-close">Salir</div>
-      <div class="button dictionary-save">Guardar</div>
+      <div class="dictionary-tag-new">
+        <input class="dictionary-word dictionary-tag-new-input" placeholder="Nuevo tag">
+        <div class="button dictionary-tag-new-button">Crear</div>
+      </div>
+      <br>
+      <div class="button dictionary-close">Atrás</div>
+      <div class="button button-primary dictionary-save">Guardar</div>
     </div>
   </div>
 </script>
 
-<script id="collection-template" type="text/html">
+<script id="collection-template" type="text/x-handlebars-template">
   <div class="collection">
     <div class="field">
       <div class="label">Nombre:</div>
@@ -76,41 +94,70 @@
 
     <div class="field">
       <div class="label">Descripción:</div>
-      <textarea class="field-input collection-description">{{description}}</textarea>
+      <input class="field-input collection-description" value="{{description}}">
     </div>
 
     <div class="field">
       <div class="label">Productos:</div>
-      <textarea class="field-input collection-products">{{#each parents}}{{this}}, {{/each}}</textarea>
-      <div class="button collection-distribute">Distribuir</div>
+      <!-- <div class="collection-products">
+          <div class="collection-products-table"></div>
+      </div> -->
+      <input class="field-input collection-products" value="{{#each parents}}{{this}}, {{/each}}">
+      <!-- <div class="button collection-distribute">
+        <i class="material-icons">settings</i>
+        <br>
+        Procesar
+      </div> -->
+      <!-- <div class="button collection-import">
+        <i class="material-icons">cloud_upload</i>
+        <br>
+        Cargar excel
+      </div> -->
+      <!-- <div class="button collection-distribute">
+        <i class="material-icons">view_module</i>
+        <br>Distribuir
+      </div> -->
     </div>
 
     <div class="field">
       <div class="label">Distribución:</div>
       <div class="positions">
         {{#each positions}}
-        <div class="position">
-          <div class="tag">{{this}}</div>
-        </div>
+          <div class="position">
+            <!-- <div class="tag">{{this}}</div> -->
+            <select class="tag position-tag">
+              {{#each ../tags}}
+                <option {{#if (eq ../this name)}}selected{{/if}}>{{name}}</option>
+              {{/each}}
+            </select>
+          </div>
         {{/each}}
       </div>
     </div>
 
     <div class="actions">
-      <div class="button collection-remove">Borrar colección</div>
-      <!--<div class="button collection-save">Guardar</div>-->
+      <div class="button collection-remove">
+        <i class="material-icons">delete</i>
+        <br>
+        Borrar
+      </div>
+      <div class="button button-primary collection-save">
+        <i class="material-icons">save</i>
+        <br>
+        Guardar
+      </div>
     </div>
 
   </div>
 </script>
 
-<script id="box-template" type="text/html">
+<script id="box-template" type="text/x-handlebars-template">
   <div class="box">
     <div class="field">
       <div class="label">Tag:</div>
-      <select>
+      <select class="box-select">
         {{#each tags}}
-          <option>{{name}}</option>
+          <option {{#if (eq ../tag name)}}selected{{/if}}>{{name}}</option>
         {{/each}}
       </select>
     </div>
@@ -120,7 +167,7 @@
     </div>
     <div class="actions">
       <div class="button box-close">Salir</div>
-      <div class="button box-save">Guardar</div>
+      <div class="button button-primary box-save">Guardar</div>
     </div>
   </div>
 </script>
@@ -129,4 +176,6 @@
 <script src="/js/lib/lodash.min.js"></script>
 <script src="/js/lib/axios.js"></script>
 <script src="/js/lib/handlebars-v4.1.2.js"></script>
+<script src="/js/lib/handsontable.full.min.js"></script>
+<script src="/js/storage.js"></script>
 <script src="/js/dashboard.js"></script>

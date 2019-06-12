@@ -1,1 +1,18 @@
-[{"name":"top","words":["blusa","camisa","chompa","polo"]},{"name":"bottom","words":["short"]},{"name":"accessory","words":["watch"]}]
+[
+  {
+    "name": "top",
+    "words": [
+      "blusa"
+    ]
+  },
+  {
+    "name": "bottom",
+    "words": []
+  },
+  {
+    "name": "electro",
+    "words": [
+      "watch"
+    ]
+  }
+]
