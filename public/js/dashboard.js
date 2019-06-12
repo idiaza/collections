@@ -73,7 +73,15 @@ $(document).ready(function () {
 
   function process(response) {
     var html = response.data;
-    var details = parse(html);
+    var details;
+
+    try {
+      details = parse(html);
+    } catch (err) {
+      return null;
+    }
+
+
     var product = details.state.product;
     var description = product.displayName.toLowerCase();
     var result = { tag: '', views: [] };
@@ -103,7 +111,11 @@ $(document).ready(function () {
       return axios.get(url(parentSku)).then(process);
     }))
       .then(function (products) {
-        var products = _.groupBy(products, 'tag');
+        // _.compact(products);
+        var products = _.groupBy(_.compact(products), 'tag');
+
+        console.log(products);
+
         var items = [];
 
         _.each(_.countBy(positions), function (count, tag) {
