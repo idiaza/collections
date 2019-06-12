@@ -105,7 +105,7 @@ html, body {
 }
 
 .busy {
-  background-color: rgba(255, 255, 255, .4);
+  background-color: rgba(255, 255, 255, .8);
   background-image: url('/img/loader.gif');
   background-position: center center;
   background-repeat: no-repeat;
@@ -113,7 +113,7 @@ html, body {
   display: none;
   height: 100%;
   left: 0;
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
   width: 100%;
