@@ -161,12 +161,14 @@ $(document).ready(function () {
 
       storage.removeTag(tag);
       $tag.remove();
+      renderCollections();
     });
 
     $dictionary.find('.dictionary-tag-new-button').on('click', function () {
       var $input = $('.dictionary-tag-new-input');
       storage.setTag($input.val().trim(), []);
       openDictionary();
+      renderCollections();
     });
 
     $dictionary.find('.dictionary-tag-new-input').on('keyup', function (e) {
@@ -174,6 +176,7 @@ $(document).ready(function () {
       if (e.keyCode == 13) {
         storage.setTag($input.val().trim(), []);
         openDictionary();
+        renderCollections();
       }
     });
 
@@ -185,6 +188,7 @@ $(document).ready(function () {
         .then(function (response) {
           unbusy($button);
           closePopup();
+          renderCollections();
         });
     });
 
@@ -291,6 +295,9 @@ $(document).ready(function () {
             .replace(/\s/g, ''),
           ','
         ));
+
+        // A duplicate-free version of products array
+        products = _.uniq(products);
 
         busy($button);
         distribute(
