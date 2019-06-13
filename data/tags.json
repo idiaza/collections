@@ -2,14 +2,16 @@
   {
     "name": "top",
     "words": [
-      "blusa"
+      "blusa",
+      "camiseta"
     ]
   },
   {
     "name": "bottom",
     "words": [
       "falda",
-      "pantalón"
+      "pantalón",
+      "jersey"
     ]
   },
   {
@@ -19,7 +21,9 @@
     ]
   },
   {
-    "name": "asdfasdf",
-    "words": []
+    "name": "Calzado",
+    "words": [
+      "zapatilla"
+    ]
   }
 ]

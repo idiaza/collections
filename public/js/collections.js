@@ -170,56 +170,216 @@ $(document).ready(function () {
       ));
     }
 
-    $.each(collection.items, function (index, box) {
+    // box structure creation
+    $.each(collection.items, function (index, parents) {
+      console.log(index + ': ', parents.length);
+
       var $box = $('<div class="box"></div>');
-      var $top = $('<div class="control arrow arrow-top">❮</div>');
-      var $right = $('<div class="control arrow arrow-right">❯</div>');
-      var $bottom = $('<div class="control arrow arrow-bottom">❯</div>');
-      var $left = $('<div class="control arrow arrow-left">❮</div>');
-      var $vertical = $('<div class="slider vertical"></div>');
+      
+      if (!_.isEmpty(parents)) {
+        var $vertical = $('<div class="slider vertical"></div>');
 
-      $box.append($top);
-      $box.append($right);
-      $box.append($bottom);
-      $box.append($left);
+        // top, bottom arrows
+        var $top = $('<div class="control arrow arrow-vertical arrow-top">❮</div>');
+        var $bottom = $('<div class="control arrow arrow-vertical arrow-bottom">❯</div>');
+        $top.on('click', function () {
+          $vertical.slick('slickPrev');
+        });
+        $bottom.on('click', function () {
+          $vertical.slick('slickNext');
+        });
+        $box.append($top);
+        $box.append($bottom);
 
-      $left.on('click', function () {
-        $box.find('.horizontal.slick-current')
-          .slick('slickPrev');
-      });
-      $right.on('click', function () {
-        $box.find('.horizontal.slick-current')
-          .slick('slickNext');
-      });
+        // left, right arrows
+        var $left = $('<div class="control arrow arrow-horizontal arrow-left">❮</div>');
+        var $right = $('<div class="control arrow arrow-horizontal arrow-right">❯</div>');
+        $left.on('click', function () {
+          $box.find('.horizontal.slick-current')
+            .slick('slickPrev');
+        });
+        $right.on('click', function () {
+          $box.find('.horizontal.slick-current')
+            .slick('slickNext');
+        });
+        $box.append($left);
+        $box.append($right);
+        
+        $.each(parents, function (index, product) {
+          var $horizontal = $('<div class="slider horizontal"></div>');
+          
+          $.each(product.views, function (index, view) {
+            var $view = $(`
+              <div class="view" data-product="${view}">
+                <img src="https://falabella.scene7.com/is/image/FalabellaPE/${view}_2?wid=320&hei=320">
+              </div>
+            `);
+            $horizontal.append($view);
+          });
+          
+          // agregar flechas
 
-      $top.on('click', function () {
-        $vertical.slick('slickPrev');
-      });
-      $bottom.on('click', function () {
-        $vertical.slick('slickNext');
-      });
-
-      $.each(box, function (index, product) {
-        var $horizontal = $('<div class="slider horizontal"></div>');
-
-        $horizontal.attr('data-product', product.id);
-        $.each(product.views, function (index, view) {
-          var $view = $('<div class="view" data-product="' + view + '"><img src="https://falabella.scene7.com/is/image/FalabellaPE/' + view + '_2?wid=320&hei=320"></div>');
-
-          $horizontal.append($view);
+          $vertical.append($horizontal);
         });
 
-        $vertical.append($horizontal);
-      });
-
-      $box.append($vertical);
+        $box.append($vertical);
+      }
       $outfit.append($box);
+
+
+
+
+      /*
+      console.log(box);
+      
+      var $box = $('<div class="box"></div>');
+
+      if (!_.isEmpty(box)) {
+        var $vertical = $('<div class="slider vertical"></div>');
+
+        if (box.length > 1) {
+          var $top = $('<div class="control arrow arrow-top">❮</div>');
+          var $bottom = $('<div class="control arrow arrow-bottom">❯</div>');
+
+          // $top.on('click', function () {
+          //   $vertical.slick('slickPrev');
+          // });
+          // $bottom.on('click', function () {
+          //   $vertical.slick('slickNext');
+          // });
+
+          // $box.append($top);
+          // $box.append($bottom);
+          $vertical.append($top);
+          $vertical.append($bottom);
+        }
+        
+        // arrows
+        var $left = $('<div class="control arrow arrow-left">❮</div>');
+        var $right = $('<div class="control arrow arrow-right">❯</div>');
+
+        $left.on('click', function () {
+          $box.find('.horizontal.slick-current')
+            .slick('slickPrev');
+        });
+        $right.on('click', function () {
+          $box.find('.horizontal.slick-current')
+            .slick('slickNext');
+        });
+
+        $box.append($left);
+        $box.append($right);
+
+        $.each(box, function (index, product) {
+          var $horizontal = $('<div class="slider horizontal"></div>');
+
+          $horizontal.attr('data-product', product.id);
+          
+          // views/variations
+          $.each(product.views, function (index, view) {
+            var $view = $('<div class="view" data-product="' + view + '"><img src="https://falabella.scene7.com/is/image/FalabellaPE/' + view + '_2?wid=320&hei=320"></div>');
+
+            $horizontal.append($view);
+          });
+
+          $vertical.append($horizontal);
+        });
+
+        $box.append($vertical);
+
+      }
+
+      $outfit.append($box);
+      
+      */
+
     });
 
+    // box v/h sliders
     $collections.waitForImages(function() {
-      $('.horizontal').slick({ arrows: false/*, infinite: false*/, swipe: false });
-      $('.vertical').slick({ arrows: false, infinite: false, swipe: false, vertical: true });
-      $('.collections').addClass('visible');
+
+      $collections.find('.horizontal').slick({
+        arrows: false,
+        swipe: false,
+      });
+
+
+
+
+
+
+
+
+
+
+
+
+      $collections.find('.box').each(function () {
+        var $box = $(this);
+        var $verticalArrows = $box.find('.arrow-vertical');
+        var $horizontalArrows = $box.find('.arrow-horizontal');
+        var $vertical = $box.find('.vertical');
+
+        $vertical.slick({
+          arrows: false,
+          swipe: false,
+          vertical: true,
+        });
+
+        var verticalSlick = $vertical.slick('getSlick');
+
+        if (verticalSlick.slideCount > 1) {
+          $verticalArrows
+            .addClass('visible');
+        }
+
+        var $horizontal = $(verticalSlick.$slides[$vertical.slick('slickCurrentSlide')]);
+        
+        if ($horizontal.slick('getSlick').slideCount > 1) {
+          $horizontalArrows
+            .addClass('visible');
+        } else {
+          $horizontalArrows
+          .removeClass('visible');
+        }
+        
+        $vertical.on('beforeChange', function(e, slick, currentSlide, nextSlide){
+          if (e.currentTarget == e.target) {
+            
+            
+            var $horizontal = $(verticalSlick.$slides[nextSlide]);
+        
+            if ($horizontal.slick('getSlick').slideCount > 1) {
+              $horizontalArrows
+                .addClass('visible');
+            } else {
+              $horizontalArrows
+              .removeClass('visible');
+            }
+
+
+
+          }
+        });
+      });
+
+      function renderArrows($slider, slideIndex) {
+        var slick = $slider.slick('getSlick');
+        // if (slick.options.vertical) {
+          var $slide = $(slick.$slides[slideIndex]);
+          var $horizontalArrows = $slide.closest('.box').find('.arrow-horizontal');
+
+          if ($slide.find('.view').length > 1) {
+            $horizontalArrows
+              .addClass('visible');
+          } else {
+            $horizontalArrows
+            .removeClass('visible');
+          }
+        // }
+      }
+      
+      $collections.addClass('visible');
     });
 
     $popup.find('.popup-backdrop').on('click', closePopup);

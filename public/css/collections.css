@@ -218,9 +218,15 @@
   z-index: 1;
 }
 
-.arrow-top, .arrow-bottom {
-  left: 50%;
-  margin-left: -24px;
+.arrow-horizontal {
+  opacity: 0;
+  transition: opacity ease .4s;
+  visibility: hidden;
+}
+
+.arrow-horizontal.visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 .arrow-left, .arrow-right {
@@ -228,21 +234,37 @@
   transform: translate(0, -50%);
 }
 
-.arrow-top {
-  transform: rotate(90deg);
+.arrow-left {
+
 }
 
 .arrow-right {
   right: 0;
 }
 
-.arrow-bottom {
-  bottom: 0;
+.arrow-vertical {
+  opacity: 0;
+  transition: opacity ease .4s;
+  visibility: hidden;
+}
+
+.arrow-vertical.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.arrow-top, .arrow-bottom {
+  left: 50%;
+  margin-left: -24px;
+}
+
+.arrow-top {
   transform: rotate(90deg);
 }
 
-.arrow-left {
-
+.arrow-bottom {
+  bottom: 0;
+  transform: rotate(90deg);
 }
 
 .view {
