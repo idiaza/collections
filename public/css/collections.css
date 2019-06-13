@@ -7,14 +7,12 @@
   color: #000;
   cursor: pointer;
   display: flex;
-  /* display: inline-block; */
   font-size: 24px;
   height: 48px;
   justify-content: center;
-  /* line-height: 48px; */
   min-width: 48px;
-  /* text-align: center; */
   text-transform: uppercase;
+  transition: filter .4s;
 }
 
 .control:hover {
@@ -83,7 +81,7 @@
   position: absolute;
   right: 0;
   top: 0;
-  z-index: 2;
+  z-index: 6;
 }
 .popup.visible {
   display: flex;
@@ -159,7 +157,6 @@
   /* display: inline-block; */
   /* letter-spacing: 0px; */
   /* line-height: 0px; */
-  overflow-x: scroll;
   padding: 0 !important;
 }
 
@@ -177,7 +174,6 @@
   letter-spacing: 0px;
   line-height: 0px;
   margin-right: 8px;
-  overflow-x: scroll;
   padding: 0 !important;
   width: 144px;
 }
@@ -213,20 +209,20 @@
 }
 
 .arrow {
+  background-color: rgba(255, 255, 255, .9);
   position: absolute;
-  text-shadow: #fff 0 0 2px;
-  z-index: 1;
+  z-index: 4;
 }
 
 .arrow-horizontal {
   opacity: 0;
   transition: opacity ease .4s;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .arrow-horizontal.visible {
   opacity: 1;
-  visibility: visible;
+  /* visibility: visible; */
 }
 
 .arrow-left, .arrow-right {
@@ -245,12 +241,12 @@
 .arrow-vertical {
   opacity: 0;
   transition: opacity ease .4s;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .arrow-vertical.visible {
   opacity: 1;
-  visibility: visible;
+  /* visibility: visible; */
 }
 
 .arrow-top, .arrow-bottom {
@@ -270,6 +266,38 @@
 .view {
   cursor: pointer;
   position: relative;
+}
+
+.view .view-overlay {
+  background-color: rgba(0, 0, 0, .2);
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.view:before {
+  align-items: center;
+  background-color: rgba(0, 0, 0, .2);
+  bottom: 0;
+  color: #fff;
+  content: "Lo quiero!";
+  display: flex;
+  font-size: 18px;
+  font-weight: bold;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  text-transform: uppercase;
+  transition: opacity .3s;
+  width: 100%;
+}
+.view:hover:before {
+  opacity: 1;
 }
 
 .check {
@@ -294,7 +322,7 @@
 .basket-items {
   flex: 1;
   height: 100%;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   padding: 0 16px;
 }
 
@@ -407,3 +435,67 @@
 .slick-slide {
   border: none !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .intro .view-overlay {
+  opacity: 1;
+}
+
+.intro .arrow {
+  opacity: 1;
+} */

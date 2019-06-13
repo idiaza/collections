@@ -91,8 +91,11 @@ $(document).ready(function () {
     var $basket = $collections.find('.basket');
 
     function openPopup(childSku, product) {
+      console.log('childSku: ' + childSku);
       var childs = product.skus;
+      console.log('childs: ' + childs);
       var child = _.find(childs, { skuId: childSku });
+      console.log('child: ' + child);
       var prices = child.price;
       var collectionItem = storage.getFromCollection(childSku) || {};
       var $product = template('product', {
@@ -152,6 +155,7 @@ $(document).ready(function () {
       $product.find('.collection-add').on('click', function () {
         var quantity = $product.find('.quantity-number input').val();
         storage.addToCollection(childSku, quantity);
+        closePopup();
       });
 
       $popup.find('.popup-content').html($product);
@@ -172,8 +176,6 @@ $(document).ready(function () {
 
     // box structure creation
     $.each(collection.items, function (index, parents) {
-      console.log(index + ': ', parents.length);
-
       var $box = $('<div class="box"></div>');
       
       if (!_.isEmpty(parents)) {
@@ -206,11 +208,14 @@ $(document).ready(function () {
         $box.append($right);
         
         $.each(parents, function (index, product) {
-          var $horizontal = $('<div class="slider horizontal"></div>');
+          var $horizontal = $(`
+            <div class="slider horizontal" data-product="${product.id}"></div>
+          `);
           
           $.each(product.views, function (index, view) {
             var $view = $(`
               <div class="view" data-product="${view}">
+                <div class="view-overlay"></div>
                 <img src="https://falabella.scene7.com/is/image/FalabellaPE/${view}_2?wid=320&hei=320">
               </div>
             `);
@@ -225,94 +230,13 @@ $(document).ready(function () {
         $box.append($vertical);
       }
       $outfit.append($box);
-
-
-
-
-      /*
-      console.log(box);
-      
-      var $box = $('<div class="box"></div>');
-
-      if (!_.isEmpty(box)) {
-        var $vertical = $('<div class="slider vertical"></div>');
-
-        if (box.length > 1) {
-          var $top = $('<div class="control arrow arrow-top">❮</div>');
-          var $bottom = $('<div class="control arrow arrow-bottom">❯</div>');
-
-          // $top.on('click', function () {
-          //   $vertical.slick('slickPrev');
-          // });
-          // $bottom.on('click', function () {
-          //   $vertical.slick('slickNext');
-          // });
-
-          // $box.append($top);
-          // $box.append($bottom);
-          $vertical.append($top);
-          $vertical.append($bottom);
-        }
-        
-        // arrows
-        var $left = $('<div class="control arrow arrow-left">❮</div>');
-        var $right = $('<div class="control arrow arrow-right">❯</div>');
-
-        $left.on('click', function () {
-          $box.find('.horizontal.slick-current')
-            .slick('slickPrev');
-        });
-        $right.on('click', function () {
-          $box.find('.horizontal.slick-current')
-            .slick('slickNext');
-        });
-
-        $box.append($left);
-        $box.append($right);
-
-        $.each(box, function (index, product) {
-          var $horizontal = $('<div class="slider horizontal"></div>');
-
-          $horizontal.attr('data-product', product.id);
-          
-          // views/variations
-          $.each(product.views, function (index, view) {
-            var $view = $('<div class="view" data-product="' + view + '"><img src="https://falabella.scene7.com/is/image/FalabellaPE/' + view + '_2?wid=320&hei=320"></div>');
-
-            $horizontal.append($view);
-          });
-
-          $vertical.append($horizontal);
-        });
-
-        $box.append($vertical);
-
-      }
-
-      $outfit.append($box);
-      
-      */
-
     });
 
-    // box v/h sliders
     $collections.waitForImages(function() {
-
       $collections.find('.horizontal').slick({
         arrows: false,
         swipe: false,
       });
-
-
-
-
-
-
-
-
-
-
-
 
       $collections.find('.box').each(function () {
         var $box = $(this);
@@ -356,28 +280,9 @@ $(document).ready(function () {
               $horizontalArrows
               .removeClass('visible');
             }
-
-
-
           }
         });
       });
-
-      function renderArrows($slider, slideIndex) {
-        var slick = $slider.slick('getSlick');
-        // if (slick.options.vertical) {
-          var $slide = $(slick.$slides[slideIndex]);
-          var $horizontalArrows = $slide.closest('.box').find('.arrow-horizontal');
-
-          if ($slide.find('.view').length > 1) {
-            $horizontalArrows
-              .addClass('visible');
-          } else {
-            $horizontalArrows
-            .removeClass('visible');
-          }
-        // }
-      }
       
       $collections.addClass('visible');
     });
