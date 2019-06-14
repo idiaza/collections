@@ -3,14 +3,20 @@
     "name": "top",
     "words": [
       "blusa",
-      "camiseta"
+      "camiseta",
+      "polerón",
+      "poleron",
+      "casaca",
+      "chaleco",
+      "abrigo"
     ]
   },
   {
     "name": "bottom",
     "words": [
       "falda",
-      "pantalón"
+      "pantalón",
+      "pantalon"
     ]
   },
   {

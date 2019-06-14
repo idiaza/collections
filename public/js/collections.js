@@ -310,6 +310,18 @@ $(document).ready(function () {
       });
     });
 
+    $('.cart-add').on('click', function (e) {
+      $.post('/tracks/add-collection-to-cart', {
+        items: [
+          '12341234',
+          '12341235',
+          '12341236',
+        ],
+      }, function () {
+        console.log('done')
+      });
+    });
+
     storage.on('collectionChange', function () {
       var collection = storage.getCollection();
 
