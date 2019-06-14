@@ -41,7 +41,8 @@
       <div class="separator"></div>
       <div class="prices">
         {{#each prices}}
-          <div class="price">S/ {{price}}</div>
+          <div class="price">{{price}}<span class="price-label">{{label}}</span></div>
+          
         {{/each}}
       </div>
       <div class="separator"></div>
@@ -87,6 +88,17 @@
     </div>
   </a>
 </script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142148699-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-142148699-1');
+</script>
+
 
 <script src="/js/lib/jquery.min.js"></script>
 <script src="/js/lib/slick.min.js"></script>

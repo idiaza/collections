@@ -91,20 +91,15 @@ $(document).ready(function () {
     var $basket = $collections.find('.basket');
 
     function openPopup(childSku, product) {
-      console.log('childSku: ' + childSku);
       var childs = product.skus;
-      console.log('childs: ' + childs);
       var child = _.find(childs, { skuId: childSku });
-      console.log('child: ' + child);
       var prices = child.price;
       var collectionItem = storage.getFromCollection(childSku) || {};
       var $product = template('product', {
         sku: childSku,
         brand: product.brand,
         description: product.displayName,
-        prices: _.map(_.orderBy(prices, function (price) {
-          return parseFloat(price.originalPrice);
-        }), function (item, itemIndex) {
+        prices: _.map(_.orderBy(prices, function (price) {return parseFloat(price.originalPrice);}), function (item, itemIndex) {
           return { price: item.originalPrice, label: item.label };
         }),
         sizes: _.map(_.filter(childs, { color: child.color }), function (item) {
@@ -243,6 +238,9 @@ $(document).ready(function () {
         var $verticalArrows = $box.find('.arrow-vertical');
         var $horizontalArrows = $box.find('.arrow-horizontal');
         var $vertical = $box.find('.vertical');
+
+        if ($vertical.length == 0)
+          return;
 
         $vertical.slick({
           arrows: false,

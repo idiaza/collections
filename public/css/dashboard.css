@@ -177,16 +177,14 @@ html, body {
 }
 
 .bar {
-  align-items: center;
+  /* align-items: center; */
   background-color: #444;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, .4);
-  display: flex;
+  /* display: flex; */
   height: 72px;
-  /* justify-content: space-between; */
-  justify-content: center;
+  /* justify-content: center; */
   left: 0;
-  /* max-width: 960px; */
-  padding: 0 16px;
+  padding: 8px;
   position: fixed;
   top: 0;
   width: 100%;

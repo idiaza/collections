@@ -10,20 +10,17 @@
     "name": "bottom",
     "words": [
       "falda",
-      "pantalón",
-      "jersey"
+      "pantalón"
     ]
   },
   {
-    "name": "electro",
+    "name": "calzado",
     "words": [
-      "watch"
-    ]
-  },
-  {
-    "name": "Calzado",
-    "words": [
-      "zapatilla"
+      "zapatilla",
+      "zapatillas",
+      "bota",
+      "botin",
+      "botas"
     ]
   }
 ]

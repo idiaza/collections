@@ -148,9 +148,24 @@
   /* font-size: 24px; */
 }
 
+.price:before {
+  content: "S/";
+  /* color: #888; */
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .price:first-child {
   color: #e4022d;
   font-size: 24px;
+}
+
+.price-label {
+  color: #444;
+  font-size: 10px;
+  letter-spacing: 0;
+  margin-left: 4px;
+  /* text-transform: uppercase; */
 }
 
 .sizes {
@@ -280,7 +295,7 @@
 
 .view:before {
   align-items: center;
-  background-color: rgba(0, 0, 0, .2);
+  background-color: rgba(143, 202, 0, 0.7);
   bottom: 0;
   color: #fff;
   content: "Lo quiero!";

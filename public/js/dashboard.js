@@ -78,16 +78,15 @@ $(document).ready(function () {
     try {
       details = parse(html);
     } catch (err) {
+      console.error(err);
       return null;
     }
 
 
     var product = details.state.product;
     var description = product.displayName.toLowerCase();
-    var result = { tag: '', views: [] };
+    var result = { id: product.id, tag: 'any', views: [] };
     var tags = storage.getTags();
-
-    result.id = product.id;
 
     _.each(tags, function (tag) {
       _.each(tag.words, function (word) {
@@ -111,26 +110,75 @@ $(document).ready(function () {
       return axios.get(url(parentSku)).then(process);
     }))
       .then(function (products) {
-        // _.compact(products);
-        var products = _.groupBy(_.compact(products), 'tag');
 
-        console.log(products);
-
+        // var products = _.groupBy(_.compact(products), 'tag');
+        var products = _.compact(products);
         var items = [];
 
-        _.each(_.countBy(positions), function (count, tag) {
-          if (products[tag])
-            products[tag] = _.chunk(products[tag], Math.ceil(products[tag].length / count));
-        });
+        // console.log(products);
 
-        _.map(positions, function (tag) {
-          if (products[tag]) {
-            items.push(products[tag][0]);
-            products[tag] = _.tail(products[tag]);
-          } else {
-            items.push([]);
+        var positionIndex = 0;
+        while(products.length || positionIndex == 120) {
+          var product = products[0];
+          var positionTag = positions[positionIndex];
+          var productTag = product.tag;
+
+          if (!items[positionIndex]) {
+            items[positionIndex] = [];
           }
-        });
+
+          if (product.id == '16556720') {
+            console.log('===');
+            console.log(positionTag);
+            console.log(productTag);
+            console.log(_.includes(positions, productTag))
+            console.log('===');
+          }
+
+          console.log('---');
+          console.log('se evalua la posicion ' + (positionIndex + 1));
+
+          if (positionTag == productTag) {
+            console.log('si la etiqueta de la posicion es ' + positionTag);
+            console.log('y la etiqueta del producto es ' + productTag);
+            console.log('se agrega!');
+            items[positionIndex].push(product);
+            products = _.tail(products);
+          }
+          else if (!_.includes(positions, productTag)) {
+            console.log('entro')
+            if (positionTag == 'any') {
+              console.log('si la etiqueta de la posicion es any');
+              console.log('se agrega!');
+              items[positionIndex].push(product);
+              products = _.tail(products);
+              continue;
+            } else {
+            }
+          }
+          
+          positionIndex++;
+
+          if (positionIndex >= positions.length) {
+            positionIndex = 0;
+          }
+        }
+        console.log(items);
+
+        // _.each(_.countBy(positions), function (count, tag) {
+        //   if (products[tag]) {
+        //     products[tag] = _.chunk(products[tag], Math.ceil(products[tag].length / count));
+        //   }
+        // });
+
+        // _.map(positions, function (tag) {
+        //   if (products[tag]) {
+        //     items.push(products[tag][0]);
+        //     products[tag] = _.tail(products[tag]);
+        //   } else {
+        //     items.push([]);
+        //   }
+        // });
 
         storage.setCollectionItems(collectionId, items);
         callback();
@@ -176,19 +224,21 @@ $(document).ready(function () {
       renderCollections();
     });
 
-    $dictionary.find('.dictionary-tag-new-button').on('click', function () {
-      var $input = $('.dictionary-tag-new-input');
-      storage.setTag($input.val().trim(), []);
+    function newTag(name, words) {
+      storage.setTag(name.trim().toLowerCase(), []);
       openDictionary();
       renderCollections();
+    }
+
+    $dictionary.find('.dictionary-tag-new-button').on('click', function () {
+      var $input = $('.dictionary-tag-new-input');
+      newTag($input.val().trim().toLowerCase(), []);
     });
 
     $dictionary.find('.dictionary-tag-new-input').on('keyup', function (e) {
       var $input = $(this);
       if (e.keyCode == 13) {
-        storage.setTag($input.val().trim(), []);
-        openDictionary();
-        renderCollections();
+        newTag($input.val().trim().toLowerCase(), []);
       }
     });
 
@@ -244,9 +294,10 @@ $(document).ready(function () {
     $collections.empty();
 
     _.each(storage.getCollections(), function (collection, collectionIndex) {
-      var parents = _.map(_.flatten(collection.items), 'id');
+      var parents = _.compact(_.map(_.flatten(collection.items), 'id'));
       var $collection = template('collection', _.create(collection, {
-        parents,
+        userProducts: collection.products,
+        systemProducts: _.join(parents, ','),
         tags: _.concat(storage.getTags(), [TAG_DEFAULT]),
       }));
 
@@ -275,10 +326,10 @@ $(document).ready(function () {
       $collection.find('.collection-distribute').on('click', function () {
         var $button = $(this);
         var products = _.compact(_.split(
-          $collection.find('.collection-products')
+          $collection.find('.collection-products-user')
             .val()
             .trim()
-            .replace(/\s/g, ''),
+            .replace(/\s/g, ','),
           ','
         ));
 
@@ -301,15 +352,15 @@ $(document).ready(function () {
       $collection.find('.collection-save').on('click', function () {
         var $button = $(this);
         var products = _.compact(_.split(
-          $collection.find('.collection-products')
+          $collection.find('.collection-products-user')
             .val()
             .trim()
-            .replace(/\s/g, ''),
+            .replace(/\s/g, ','),
           ','
         ));
 
         // A duplicate-free version of products array
-        products = _.uniq(products);
+        collection.products = _.uniq(products);
 
         busy($button);
         distribute(
@@ -317,11 +368,14 @@ $(document).ready(function () {
           products,
           collection.positions,
           function () {
+            
             collection.name = $collection.find('.collection-name').val().trim();
             collection.description = $collection.find('.collection-description').val().trim();
+            
             axios.post('/collections', storage.getCollection(collection.id))
               .then(function (response) {
                 unbusy($button);
+                renderCollections();
               });
           }
         );
