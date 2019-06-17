@@ -8,7 +8,8 @@
       "poleron",
       "casaca",
       "chaleco",
-      "abrigo"
+      "abrigo",
+      "chompa"
     ]
   },
   {
@@ -16,7 +17,8 @@
     "words": [
       "falda",
       "pantalón",
-      "pantalon"
+      "pantalon",
+      "jean"
     ]
   },
   {
@@ -27,6 +29,14 @@
       "bota",
       "botin",
       "botas"
+    ]
+  },
+  {
+    "name": "accesorio",
+    "words": [
+      "watch",
+      "audífonos",
+      "cartera"
     ]
   }
 ]

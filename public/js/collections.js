@@ -77,7 +77,7 @@ $(document).ready(function () {
 
   $.getJSON('/collections', function (collections) {
     function getCollection(productId) {
-      return collections[0];
+      return collections[2];
     }
 
     var collection = getCollection(productId);

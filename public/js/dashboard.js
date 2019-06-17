@@ -152,7 +152,7 @@ $(document).ready(function () {
               console.log('se agrega!');
               items[positionIndex].push(product);
               products = _.tail(products);
-              continue;
+              // continue;
             } else {
             }
           }
