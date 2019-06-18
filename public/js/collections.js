@@ -1,88 +1,100 @@
 $(document).ready(function () {
-  function template(name, data) {
-    var source = $('script#' + name + '-template').text().trim();
-    var render = Handlebars.compile(source);
-    return $(render(data));
-  }
 
   function getProductId() {
-    return '881447613';
+    var url = document.location.href;
+
+    if (url.indexOf('/falabella-pe/product/') == 0) {
+      return false;
+    }
+
+    var sku = url
+      .split('/falabella-pe/product/')[1].split('/')[0];
+
+    return sku;
+    // return '881447613';
   }
 
   var productId = getProductId();
   if (!productId)
     return;
 
-  var storage = {
-    queue: {
-      'collectionChange': [],
-    },
-    cache: {},
-    collection: {},
-    on: function (topic, cb) {
-      this.queue[topic].push(cb);
-    },
-    addToCache: function (product) {
-      this.cache[product.id] = product;
-    },
-    getFromCache: function (sku) {
-      return this.cache[sku];
-    },
-    addToCollection: function (sku, quantity) {
-      quantity = parseInt(quantity);
-
-      if (this.collection[sku]) {
-        this.collection[sku].quantity += quantity;
-
-        var self = this;
-        _.each(this.queue['collectionChange'], function (cb) {
-          cb(self.collection[sku]);
-        });
-
-        return;
-      }
-
-      var product = _.find(this.cache, {skus: [{ skuId: sku }]});
-      var child = _.find(product.skus, { skuId: sku });
-
-      this.collection[sku] = {
-        parentSku: product.id,
-        sku: child.skuId,
-        brand: product.brand,
-        description: product.displayName,
-        size: child.size,
-        quantity: quantity || 1,
-      };
-
-      var self = this;
-      _.each(this.queue['collectionChange'], function (cb) {
-        cb(self.collection[sku]);
-      });
-    },
-    getFromCollection: function (sku) {
-      return this.collection[sku];
-    },
-    removeFromCollection: function (sku) {
-      delete this.collection[sku];
-
-      var self = this;
-      _.each(this.queue['collectionChange'], function (cb) {
-        cb(self.collection[sku]);
-      });
-    },
-    getCollection: function () {
-      return _.map(this.collection);
-    }
-  };
-
   $.getJSON('/collections', function (collections) {
     function getCollection(productId) {
-      return collections[2];
+      var collection = _.find(collections, { products: [productId] });
+      return collection;
     }
 
     var collection = getCollection(productId);
     if (!collection)
       return;
+
+    function template(name, data) {
+      var source = $('script#' + name + '-template').text().trim();
+      var render = Handlebars.compile(source);
+      return $(render(data));
+    }
+  
+    var storage = {
+      queue: {
+        'collectionChange': [],
+      },
+      cache: {},
+      collection: {},
+      on: function (topic, cb) {
+        this.queue[topic].push(cb);
+      },
+      addToCache: function (product) {
+        this.cache[product.id] = product;
+      },
+      getFromCache: function (sku) {
+        return this.cache[sku];
+      },
+      addToCollection: function (sku, quantity) {
+        quantity = parseInt(quantity);
+  
+        if (this.collection[sku]) {
+          this.collection[sku].quantity += quantity;
+  
+          var self = this;
+          _.each(this.queue['collectionChange'], function (cb) {
+            cb(self.collection[sku]);
+          });
+  
+          return;
+        }
+  
+        var product = _.find(this.cache, {skus: [{ skuId: sku }]});
+        var child = _.find(product.skus, { skuId: sku });
+  
+        this.collection[sku] = {
+          parentSku: product.id,
+          sku: child.skuId,
+          brand: product.brand,
+          description: product.displayName,
+          size: child.size,
+          quantity: quantity || 1,
+        };
+  
+        var self = this;
+        _.each(this.queue['collectionChange'], function (cb) {
+          cb(self.collection[sku]);
+        });
+      },
+      getFromCollection: function (sku) {
+        return this.collection[sku];
+      },
+      removeFromCollection: function (sku) {
+        delete this.collection[sku];
+  
+        var self = this;
+        _.each(this.queue['collectionChange'], function (cb) {
+          cb(self.collection[sku]);
+        });
+      },
+      getCollection: function () {
+        return _.map(this.collection);
+      }
+    };
 
     var $collections = $('.collections');
     var $busy = $collections.find('.busy');

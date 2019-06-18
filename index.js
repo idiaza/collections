@@ -71,4 +71,8 @@ app.post('/tracks/:type', function (req, res) {
     });
 });
 
+app.get('/falabella-pe/product/:sku/', function (req, res) {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
 app.listen(8080);
