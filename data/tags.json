@@ -38,5 +38,11 @@
       "audífonos",
       "cartera"
     ]
+  },
+  {
+    "name": "tele",
+    "words": [
+      "led"
+    ]
   }
 ]

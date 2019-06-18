@@ -223,7 +223,7 @@ $(document).ready(function () {
             var $view = $(`
               <div class="view" data-product="${view}">
                 <div class="view-overlay"></div>
-                <img src="https://falabella.scene7.com/is/image/FalabellaPE/${view}_2?wid=320&hei=320">
+                <img src="https://falabella.scene7.com/is/image/FalabellaPE/${view}_1?wid=320&hei=320">
               </div>
             `);
             $horizontal.append($view);
