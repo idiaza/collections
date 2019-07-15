@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+  console.log('collections v0.2');
+
   function getProductId() {
     var url = document.location.href;
 
@@ -18,7 +20,7 @@ $(document).ready(function () {
   if (!productId)
     return;
 
-  $.getJSON('/collections', function (collections) {
+  $.getJSON('https://falabellacollections.azurewebsites.net/collections', function (collections) {
     function getCollection(productId) {
       var collection = _.find(collections, { products: [productId] });
       return collection;
