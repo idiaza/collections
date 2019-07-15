@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const _ = require('lodash');
 const csvdb = require('csv-database');
 const uuidv4 = require('uuid/v4');
+const cors = require('cors');
 
 const app = express();
 
@@ -12,6 +13,7 @@ const PATH_COLLECTIONS = __dirname + '/data/collections.json';
 const PATH_TAGS = __dirname + '/data/tags.json';
 const PATH_TRACK = __dirname + '/data/track.csv';
 
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
