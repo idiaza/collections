@@ -334,7 +334,7 @@ $(document).ready(function () {
       // }, function () {
       //   console.log('done')
       // });
-      console.log('.card-add is clicked - 20190808');
+      console.log('.card-add is clicked - 20190808v1');
       console.log(storage.getCollection());
 
 
