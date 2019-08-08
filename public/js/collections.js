@@ -1,6 +1,6 @@
 $(document).ready(function () {
-
-  console.log('collections v0.2');
+  console.log('collections v20190808-4');
+  // console.log('collections v0.2');
 
   function getProductId() {
     var url = document.location.href;
@@ -107,6 +107,12 @@ $(document).ready(function () {
     function openPopup(childSku, product) {
       var childs = product.skus;
       var child = _.find(childs, { skuId: childSku });
+
+      if (!child) {
+        console.log('no stock');
+        return;
+      }
+
       var prices = child.price;
       var collectionItem = storage.getFromCollection(childSku) || {};
       var $product = template('product', {
@@ -320,8 +326,6 @@ $(document).ready(function () {
         var details = parse(html);
         product = details.state.product;
         storage.addToCache(product);
-        console.log('v3');
-        console.log(product);
         openPopup(childSku, product);
       });
     });
@@ -336,7 +340,6 @@ $(document).ready(function () {
       // }, function () {
       //   console.log('done')
       // });
-      console.log('.card-add is clicked - 20190808v2');
 
       $.ajax({
         url: '/rest/model/atg/commerce/order/purchase/CartModifierActor/addItemToBasket',
