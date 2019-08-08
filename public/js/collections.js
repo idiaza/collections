@@ -334,7 +334,7 @@ $(document).ready(function () {
       // }, function () {
       //   console.log('done')
       // });
-      console.log('.card-add is clicked - 20190808v1');
+      console.log('.card-add is clicked - 20190808v2');
 
       $.ajax({
         url: '/rest/model/atg/commerce/order/purchase/CartModifierActor/addItemToBasket',
