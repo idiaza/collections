@@ -320,6 +320,8 @@ $(document).ready(function () {
         var details = parse(html);
         product = details.state.product;
         storage.addToCache(product);
+        console.log('v3');
+        console.log(product);
         openPopup(childSku, product);
       });
     });
