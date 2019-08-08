@@ -325,15 +325,16 @@ $(document).ready(function () {
     });
 
     $('.cart-add').on('click', function (e) {
-      $.post('/tracks/add-collection-to-cart', {
-        items: [
-          '12341234',
-          '12341235',
-          '12341236',
-        ],
-      }, function () {
-        console.log('done')
-      });
+      // $.post('/tracks/add-collection-to-cart', {
+      //   items: [
+      //     '12341234',
+      //     '12341235',
+      //     '12341236',
+      //   ],
+      // }, function () {
+      //   console.log('done')
+      // });
+      console.log('.card-add is clicked - 20190808');
     });
 
     storage.on('collectionChange', function () {
