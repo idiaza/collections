@@ -1,6 +1,6 @@
 $(document).ready(function () {
-  
-  console.log('collections frontend v20190808-5');
+
+  console.log('collections client v20190808-5');
   // console.log('collections v0.2');
 
   function getProductId() {

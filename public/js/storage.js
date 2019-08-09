@@ -54,10 +54,11 @@ var storage = {
       items: items || [],
     });
   },
-  removeCollection: function (collectionName) {
+  removeCollection: function (collectionId) {
     // var index = _.findIndex(this.collections, { name: collectionName });
     // this.collections[index];
-    _.remove(this.collections, { name: collectionName });
+    _.remove(this.collections, { id: collectionId });
+    // console.log(this.collections);
   },
   on: function (topic, handler) {
     if (!this.queue[topic]) {

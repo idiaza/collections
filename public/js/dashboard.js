@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-  console.log('collections backend v20190808-5');
+  console.log('collections dashboard v20190808-5');
 
   const TAG_DEFAULT = {
     name: 'any',
@@ -347,8 +347,15 @@ $(document).ready(function () {
       });
 
       $collection.find('.collection-remove').on('click', function () {
-        storage.removeCollection(collection.name);
-        $collection.remove();
+        var $button = $(this);
+        busy($button);
+        storage.removeCollection(collection.id);
+        axios.post('/collections', storage.getCollections())
+          .then(function (response) {
+            unbusy($button);
+            renderCollections();
+          });
+        // // $collection.remove();
       });
 
       $collection.find('.collection-save').on('click', function () {
