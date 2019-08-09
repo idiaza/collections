@@ -360,12 +360,20 @@ $(document).ready(function () {
         contentType: 'application/json',
         data: JSON.stringify({
           "formSubmissionData": _.map(storage.getCollection(), function (item) {
-            return {
-              "skuId": item.sku, // child
-              "quantity": item.quantity,
-              "productId": item.parentSku, // parent
-              "hasVariations": true
+            // console.log(item);
+
+            let cartItem = {
+              'skuId': item.sku, // child
+              'quantity': item.quantity,
+              'productId': item.parentSku, // parent
+              'hasVariations': true
             };
+
+            // if (item.serviceSkuId) {
+            //   cartItem.serviceSkuId = item.serviceSkuId;
+            // }
+
+            return cartItem;
           })
         }),
         success: function (data) {
