@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+  console.log('collections backend v20190808-5');
+
   const TAG_DEFAULT = {
     name: 'any',
     words: []
