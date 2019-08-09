@@ -115,14 +115,25 @@ $(document).ready(function () {
       }
 
       var prices = child.price;
+      _.remove(prices, { label: 'CMR Puntos' });
+      // console.log(prices);
+
       var collectionItem = storage.getFromCollection(childSku) || {};
       var $product = template('product', {
         sku: childSku,
         brand: product.brand,
         description: product.displayName,
-        prices: _.map(_.orderBy(prices, function (price) {return parseFloat(price.originalPrice);}), function (item, itemIndex) {
-          return { price: item.originalPrice, label: item.label };
-        }),
+        prices: _.map(
+          _.orderBy(prices, function (price) {
+            return parseFloat(price.originalPrice);
+          }),
+          function (item, itemIndex) {
+            return {
+              price: item.originalPrice,
+              label: item.label
+            };
+          }
+        ),
         sizes: _.map(_.filter(childs, { color: child.color }), function (item) {
           var size = { sku: item.skuId, label: item.size };
 

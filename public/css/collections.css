@@ -170,6 +170,7 @@
 }
 
 .sizes {
+  display: none;
   /* display: inline-block; */
   /* letter-spacing: 0px; */
   /* line-height: 0px; */
